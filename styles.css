@@ -1,0 +1,985 @@
+/* =========================================================
+   JGU CAMPUS SPORT-LAGEPLAN — STYLES
+   Farbvariablen, Layout, Karten-Zoom, Modal, Responsive
+   ========================================================= */
+
+:root {
+  /* --- JGU Identity Farben --- */
+  --jgu-rot: #A10613;
+  --jgu-rot-hell: #C1121F;
+  --jgu-rot-dunkel: #7C0410;
+  --text-dunkel: #2B2B2B;
+  --text-grau: #6B6E72;
+  --bg-hell: #F4F5F7;
+  --bg-weiss: #FFFFFF;
+  --border-farbe: #E2E4E8;
+
+  /* --- Abstände / Radien --- */
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 16px;
+  --schatten: 0 2px 10px rgba(43, 43, 43, 0.08);
+  --schatten-stark: 0 12px 40px rgba(43, 43, 43, 0.22);
+
+  --header-hoehe: 68px;
+}
+
+/* --- Reset & Basis --- */
+* { box-sizing: border-box; }
+
+/* Globale Sicherheitsregel: das hidden-Attribut soll IMMER gewinnen,
+   egal welche display-Eigenschaft eine Klasse weiter unten setzt. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-hell);
+  color: var(--text-dunkel);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea {
+  font-family: inherit;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.site-header {
+  height: var(--header-hoehe);
+  background: var(--jgu-rot);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--schatten);
+}
+
+.header-inner {
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* Das Original-JGU-Logo hat einen weißen Hintergrund und graue Schrift –
+   auf dem roten Header braucht es daher eine helle "Plakette", damit es
+   in jedem Fall gut lesbar bleibt. */
+.brand-logo-chip {
+  background: #fff;
+  border-radius: var(--radius-s);
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.brand-logo-img {
+  display: block;
+  height: 34px;
+  width: auto;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.brand-text strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-text small {
+  font-size: 0.72rem;
+  opacity: 0.85;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-wrap {
+  flex: 1;
+  max-width: 480px;
+  margin-left: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-grau);
+  pointer-events: none;
+}
+
+#searchInput {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-m);
+  padding: 0 36px 0 38px;
+  font-size: 0.92rem;
+  background: #fff;
+  color: var(--text-dunkel);
+  outline: none;
+}
+
+#searchInput:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-grau);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 50%;
+}
+.search-clear:hover { background: var(--bg-hell); }
+
+/* =========================================================
+   LAYOUT — 2 Spalten
+   ========================================================= */
+.layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* =========================================================
+   KARTEN-PANEL
+   ========================================================= */
+.map-panel {
+  background: var(--bg-weiss);
+  border-radius: var(--radius-l);
+  box-shadow: var(--schatten);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-farbe);
+  /* Bleibt beim Herunterscrollen sichtbar, direkt unter dem Header –
+     so ist "Ansicht zurücksetzen" auch nach dem Heranzoomen eines Ortes
+     immer erreichbar, ohne dass man hochscrollen muss. */
+  position: sticky;
+  top: var(--header-hoehe);
+  z-index: 20;
+  background: var(--bg-weiss);
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-farbe);
+  background: var(--bg-hell);
+  color: var(--text-dunkel);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.tool-btn:hover { background: #ECEDEF; border-color: #d3d5da; }
+
+.map-hint {
+  font-size: 0.78rem;
+  color: var(--text-grau);
+}
+
+.map-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #EDEFE9;
+  touch-action: pan-x pan-y;
+}
+
+.map-stage {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+#mapImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* --- Pins --- */
+.pin-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--jgu-rot);
+  color: #fff;
+  border: 2px solid #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.pin:hover {
+  background: var(--jgu-rot-hell);
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.pin.active {
+  background: #fff;
+  color: var(--jgu-rot);
+  transform: translate(-50%, -50%) scale(1.35);
+  box-shadow: 0 0 0 4px rgba(161, 6, 19, 0.35), 0 3px 10px rgba(0,0,0,0.4);
+  z-index: 5;
+}
+
+/* --- Info-Box über der Karte --- */
+.info-box {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  background: var(--bg-weiss);
+  border: 1px solid var(--border-farbe);
+  border-left: 4px solid var(--jgu-rot);
+  border-radius: var(--radius-m);
+  padding: 14px 16px;
+  box-shadow: var(--schatten-stark);
+  animation: slideUp 0.25s ease;
+  z-index: 10;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.info-box-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.info-box-number {
+  background: var(--jgu-rot);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.info-box-eyebrow span:last-child {
+  font-size: 0.78rem;
+  color: var(--text-grau);
+}
+
+.info-box h3 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.info-box-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* =========================================================
+   BUTTONS (gemeinsam)
+   ========================================================= */
+.btn {
+  border: none;
+  border-radius: var(--radius-s);
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--jgu-rot);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--jgu-rot-hell); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--jgu-rot);
+  border: 1.5px solid var(--jgu-rot);
+}
+.btn-outline:hover { background: rgba(161, 6, 19, 0.06); }
+
+.btn-block { width: 100%; margin: 14px 0; }
+
+/* =========================================================
+   SIDEBAR — STANDORT-LISTE
+   ========================================================= */
+.sidebar {
+  background: var(--bg-weiss);
+  border-radius: var(--radius-l);
+  box-shadow: var(--schatten);
+  padding: 16px;
+  max-height: calc(100vh - var(--header-hoehe) - 40px);
+  overflow-y: auto;
+  position: sticky;
+  top: calc(var(--header-hoehe) + 20px);
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sidebar-head h2 {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--jgu-rot);
+}
+
+.result-count {
+  font-size: 0.75rem;
+  color: var(--text-grau);
+}
+
+.location-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.location-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.location-item:hover {
+  background: var(--bg-hell);
+}
+
+.location-item.active {
+  background: rgba(161, 6, 19, 0.06);
+  border-color: rgba(161, 6, 19, 0.25);
+}
+
+.location-badge {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--text-dunkel);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-item.active .location-badge {
+  background: var(--jgu-rot);
+}
+
+.location-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-copy .name {
+  font-size: 0.87rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.location-copy .building {
+  font-size: 0.74rem;
+  color: var(--text-grau);
+}
+
+.location-copy .mini-rating {
+  font-size: 0.72rem;
+  color: var(--jgu-rot);
+  font-weight: 600;
+}
+
+.no-results {
+  color: var(--text-grau);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 24px 8px;
+}
+
+mark {
+  background: rgba(193, 18, 31, 0.22);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* =========================================================
+   STERNE (Anzeige & Interaktiv)
+   ========================================================= */
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.stars-static .star {
+  color: #DADCE0;
+}
+.stars-static .star.filled {
+  color: #F5A623;
+}
+
+.stars-interactive .star {
+  cursor: pointer;
+  color: #DADCE0;
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+.stars-interactive .star:hover,
+.stars-interactive .star.filled {
+  color: #F5A623;
+}
+.stars-interactive .star:hover {
+  transform: scale(1.12);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 43, 43, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  animation: fadeIn 0.18s ease;
+}
+
+/* WICHTIG: Das [hidden]-Attribut muss "display:flex" oben überschreiben können.
+   Ohne diese Regel gewinnt "display: flex" aus Spezifitätsgründen gegen die
+   Browser-Standardregel "[hidden]{display:none}" — das Modal wäre dann sogar
+   beim ersten Laden sichtbar (leer) und ließe sich per JS nicht schließen. */
+.modal-overlay[hidden] {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: var(--bg-weiss);
+  border-radius: var(--radius-l);
+  max-width: 560px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 28px;
+  position: relative;
+  box-shadow: var(--schatten-stark);
+  animation: popIn 0.2s ease;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-hell);
+  color: var(--text-dunkel);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-close:hover { background: #E7E8EA; }
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-right: 30px;
+}
+
+.modal-number {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--jgu-rot);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header h2 {
+  margin: 0 0 2px;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.modal-building {
+  margin: 0;
+  color: var(--text-grau);
+  font-size: 0.85rem;
+}
+
+.modal-info-text {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-dunkel);
+  margin: 0 0 18px;
+}
+
+/* =========================================================
+   MODAL — BILD-GALERIE (zwischen Beschreibung und Steckbrief)
+   ========================================================= */
+.modal-gallery {
+  margin: 0 0 18px;
+}
+
+.gallery-frame {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gallery-viewport {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  background: #D6D8DB;
+}
+
+.gallery-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+}
+
+.gallery-slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gallery-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-slide-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #9AA0A6;
+}
+
+.gallery-arrow {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-farbe);
+  background: var(--bg-weiss);
+  color: var(--text-dunkel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--schatten);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.gallery-arrow:hover {
+  background: var(--jgu-rot);
+  color: #fff;
+  border-color: var(--jgu-rot);
+}
+
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.gallery-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #D5D7DB;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.gallery-dot.active {
+  /* aktueller Punkt in JGU-Rot statt Blau */
+  background: var(--jgu-rot);
+  transform: scale(1.25);
+}
+
+.modal-profile {
+  background: var(--bg-hell);
+  border-radius: var(--radius-m);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.modal-profile-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-grau);
+  margin: 0 0 10px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin: 0;
+}
+
+.profile-item dt {
+  font-size: 0.72rem;
+  color: var(--text-grau);
+  margin: 0 0 2px;
+}
+
+.profile-item dd {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-dunkel);
+  margin: 0;
+}
+
+.modal-rating {
+  background: var(--bg-hell);
+  border-radius: var(--radius-m);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rating-avg {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--jgu-rot);
+}
+
+.rating-count {
+  font-size: 0.78rem;
+  color: var(--text-grau);
+}
+
+.rating-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rating-input-label {
+  font-size: 0.8rem;
+  color: var(--text-grau);
+}
+
+/* =========================================================
+   KOMMENTARE
+   ========================================================= */
+.modal-comments h3 {
+  font-size: 0.95rem;
+  margin: 18px 0 10px;
+}
+
+.comment-list {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.comment {
+  background: var(--bg-hell);
+  border-radius: var(--radius-s);
+  padding: 10px 12px;
+}
+
+.comment .comment-author {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--jgu-rot);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.comment .comment-text {
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comment-form textarea {
+  resize: vertical;
+  min-height: 64px;
+  border: 1px solid var(--border-farbe);
+  border-radius: var(--radius-s);
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  outline: none;
+}
+.comment-form textarea:focus-visible {
+  border-color: var(--jgu-rot);
+}
+
+.comment-form .btn { align-self: flex-end; }
+
+/* =========================================================
+   RESPONSIVE — Tablet (gestapelt, aber noch großzügig)
+   ========================================================= */
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    max-height: 60vh;
+  }
+
+  .map-viewport {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* Tablets im Hochformat / große Phones */
+@media (max-width: 720px) {
+  :root { --header-hoehe: 60px; }
+
+  .header-inner { gap: 10px; padding: 0 14px; }
+
+  .brand-logo-img { height: 28px; }
+  .brand-logo-chip { padding: 3px 8px; }
+  .brand-text strong { font-size: 0.85rem; }
+  .brand-text small { display: none; }
+
+  .search-wrap { max-width: none; }
+
+  .layout { padding: 14px; gap: 14px; }
+
+  .map-viewport { aspect-ratio: 1 / 1; }
+
+  .map-toolbar {
+    flex-wrap: wrap;
+    padding: 10px 12px;
+  }
+  .map-hint { display: none; }
+
+  .info-box { left: 10px; right: 10px; bottom: 10px; padding: 12px 14px; }
+  .info-box-actions { gap: 8px; }
+  .info-box-actions .btn { flex: 1 1 auto; }
+
+  .sidebar { padding: 12px; }
+}
+
+/* Smartphones */
+@media (max-width: 480px) {
+  .header-inner { gap: 8px; padding: 0 10px; }
+  .brand-logo-img { height: 24px; }
+
+  #searchInput { font-size: 0.85rem; padding: 0 32px 0 34px; }
+
+  .layout { padding: 10px; gap: 10px; }
+
+  .map-viewport { aspect-ratio: 4 / 5; }
+
+  .modal { padding: 18px; max-height: 92vh; }
+  .modal-header h2 { font-size: 1.08rem; }
+  .modal-profile { padding: 12px; }
+  .profile-grid { grid-template-columns: 1fr; }
+  .modal-rating { padding: 12px; }
+  .rating-summary, .rating-input { flex-wrap: wrap; }
+
+  .location-item { padding: 9px 8px; }
+  .location-copy .name { font-size: 0.84rem; }
+}
+
+/* --- Touch-freundliche Ziele auf allen Screens mit Touch-Eingabe --- */
+@media (hover: none) and (pointer: coarse) {
+  .pin { width: 30px; height: 30px; font-size: 0.78rem; }
+  .btn { padding: 11px 16px; min-height: 44px; }
+  .tool-btn { min-height: 40px; }
+  .stars-interactive .star { font-size: 1.35rem; padding: 4px; }
+  .location-item { min-height: 44px; }
+  .modal-close { width: 38px; height: 38px; }
+  .gallery-arrow { width: 40px; height: 40px; }
+  .gallery-dot { width: 10px; height: 10px; }
+
+  /* Verhindert das native "Bild speichern"-Kontextmenü / den Callout beim
+     langen Antippen der Karte auf iOS/Android – sonst wirkt es, als würde
+     ein Popup aufgehen, das man nicht schließen kann. */
+  #mapImage, .pin {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Reduzierte Bewegung respektieren */
+@media (prefers-reduced-motion: reduce) {
+  .map-stage, .info-box, .modal, .modal-overlay, .pin {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Sichtbarer Fokus für Tastaturnutzung */
+a:focus-visible,
+button:focus-visible,
+.pin:focus-visible,
+.location-item:focus-visible,
+.star:focus-visible {
+  outline: 2.5px solid var(--jgu-rot);
+  outline-offset: 2px;
+}

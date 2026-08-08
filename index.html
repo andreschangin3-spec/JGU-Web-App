@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JGU Mainz – Campus Lageplan</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-logo-chip">
+          <img src="jgu-logo.png" alt="Johannes Gutenberg-Universität Mainz" class="brand-logo-img">
+        </span>
+        <span class="brand-text">
+          <strong>Campus Lageplan</strong>
+          <small>Freizeit-Spots der JGU Mainz</small>
+        </span>
+      </div>
+
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Ort suchen … z. B. Volleyball, Wiese, Tischtennis"
+          autocomplete="off"
+        >
+        <button id="searchClear" class="search-clear" title="Suche löschen" hidden>&times;</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== HAUPTBEREICH ===================== -->
+  <main class="layout">
+
+    <!-- ---------- LINKE SPALTE: KARTE ---------- -->
+    <section class="map-panel" aria-label="Interaktive Campus-Karte">
+      <div class="map-toolbar">
+        <button id="zoomOutBtn" class="tool-btn" title="Zoom zurücksetzen">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+          Ansicht zurücksetzen
+        </button>
+        <span id="mapHint" class="map-hint">Tippe auf eine Nummer, um heranzuzoomen</span>
+      </div>
+
+      <div class="map-viewport" id="mapViewport">
+        <div class="map-stage" id="mapStage">
+          <img src="campus-lageplan.png" alt="Lageplan Gesamtcampus JGU Mainz" id="mapImage" draggable="false">
+          <!-- Pins werden per JS aus LOCATIONS erzeugt -->
+          <div id="pinLayer" class="pin-layer"></div>
+        </div>
+      </div>
+
+      <!-- Info-Box, die bei Auswahl eines Ortes über der Karte erscheint -->
+      <div id="infoBox" class="info-box" hidden>
+        <div class="info-box-eyebrow">
+          <span id="infoBoxNumber" class="info-box-number">–</span>
+          <span id="infoBoxBuilding"></span>
+        </div>
+        <h3 id="infoBoxTitle">–</h3>
+        <div class="info-box-actions">
+          <button id="infoBoxDetails" class="btn btn-primary">Mehr Infos</button>
+          <button id="infoBoxMaps" class="btn btn-outline">Auf Maps zeigen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- RECHTE SPALTE: LISTE ---------- -->
+    <aside class="sidebar" aria-label="Liste aller Standorte">
+      <div class="sidebar-head">
+        <h2>Standorte</h2>
+        <span id="resultCount" class="result-count">7 Orte</span>
+      </div>
+      <ul id="locationList" class="location-list"></ul>
+      <p id="noResults" class="no-results" hidden>Kein Ort gefunden. Versuch einen anderen Suchbegriff.</p>
+    </aside>
+
+  </main>
+
+  <!-- ===================== DETAIL-MODAL ===================== -->
+  <div id="modalOverlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="modalClose" class="modal-close" title="Schließen" aria-label="Schließen">&times;</button>
+
+      <div class="modal-header">
+        <span id="modalNumber" class="modal-number">–</span>
+        <div>
+          <h2 id="modalTitle">–</h2>
+          <p id="modalBuilding" class="modal-building"></p>
+        </div>
+      </div>
+
+      <p id="modalInfoText" class="modal-info-text"></p>
+
+      <div class="modal-gallery" id="modalGallery">
+        <div class="gallery-frame">
+          <button type="button" id="galleryPrevBtn" class="gallery-arrow gallery-arrow-left" aria-label="Vorheriges Bild">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </button>
+
+          <div class="gallery-viewport" id="galleryViewport">
+            <!-- Slides werden per JS aus loc.images erzeugt -->
+          </div>
+
+          <button type="button" id="galleryNextBtn" class="gallery-arrow gallery-arrow-right" aria-label="Nächstes Bild">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </button>
+        </div>
+
+        <div class="gallery-dots" id="galleryDots"></div>
+      </div>
+
+      <div class="modal-profile">
+        <h3 class="modal-profile-title">Steckbrief</h3>
+        <dl class="profile-grid">
+          <div class="profile-item">
+            <dt>Öffnungszeiten</dt>
+            <dd id="modalHours">–</dd>
+          </div>
+          <div class="profile-item">
+            <dt>Belichtung</dt>
+            <dd id="modalLighting">–</dd>
+          </div>
+          <div class="profile-item">
+            <dt>Untergrund</dt>
+            <dd id="modalSurface">–</dd>
+          </div>
+          <div class="profile-item">
+            <dt>Ausstattung</dt>
+            <dd id="modalEquipment">–</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="modal-rating">
+        <div class="rating-summary">
+          <span id="modalAvgRating" class="rating-avg">–</span>
+          <div id="modalAvgStars" class="stars stars-static" aria-hidden="true"></div>
+          <span id="modalVoteCount" class="rating-count">(0 Bewertungen)</span>
+        </div>
+
+        <div class="rating-input">
+          <span class="rating-input-label">Deine Bewertung:</span>
+          <div id="userStars" class="stars stars-interactive" role="radiogroup" aria-label="Bewertung abgeben"></div>
+        </div>
+      </div>
+
+      <a id="modalMapsLink" class="btn btn-outline btn-block" target="_blank" rel="noopener">
+        Auf Google Maps öffnen
+      </a>
+
+      <div class="modal-comments">
+        <h3>Kommentare</h3>
+        <ul id="commentList" class="comment-list"></ul>
+
+        <form id="commentForm" class="comment-form">
+          <textarea id="commentInput" placeholder="Deine Erfahrung mit diesem Ort …" required></textarea>
+          <button type="submit" class="btn btn-primary">Absenden</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
