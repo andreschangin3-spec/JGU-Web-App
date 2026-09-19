@@ -626,4 +626,34 @@ function init() {
   renderLocationList();
 }
 
+/* ---------------------------------------------------------
+   12) MOBILE NAVIGATION (Hamburger-Menü)
+   --------------------------------------------------------- */
+const navToggle = document.getElementById("navToggle");
+const mainNav = document.getElementById("mainNav");
+if (navToggle && mainNav) {
+  navToggle.addEventListener("click", () => {
+    const isOpen = mainNav.classList.toggle("nav-open");
+    navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+  mainNav.querySelectorAll(".nav-link").forEach(link => {
+    link.addEventListener("click", () => {
+      mainNav.classList.remove("nav-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+  // Menü schließen, wenn außerhalb geklickt wird
+  document.addEventListener("click", e => {
+    if (!mainNav.classList.contains("nav-open")) return;
+    if (mainNav.contains(e.target) || navToggle.contains(e.target)) return;
+    mainNav.classList.remove("nav-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  });
+}
+
+
+
+
+
+
 init();
