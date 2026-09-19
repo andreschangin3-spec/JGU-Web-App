@@ -13,7 +13,7 @@
     <div class="header-inner">
       <div class="brand">
         <span class="brand-logo-chip">
-          <img src="jgu-logo.png" alt="Johannes Gutenberg-Universität Mainz" class="brand-logo-img">
+          <img src="Bilder/jgu-logo.webp" alt="Johannes Gutenberg-Universität Mainz" class="brand-logo-img">
         </span>
         <span class="brand-text">
           <strong>Campus Lageplan</strong>
@@ -52,7 +52,7 @@
 
       <div class="map-viewport" id="mapViewport">
         <div class="map-stage" id="mapStage">
-          <img src="campus-lageplan.png" alt="Lageplan Gesamtcampus JGU Mainz" id="mapImage" draggable="false">
+          <img src="Bilder/campus-lageplan.webp" alt="Lageplan Gesamtcampus JGU Mainz" id="mapImage" draggable="false">
           <!-- Pins werden per JS aus LOCATIONS erzeugt -->
           <div id="pinLayer" class="pin-layer"></div>
         </div>
@@ -93,11 +93,11 @@
         <span id="modalNumber" class="modal-number">–</span>
         <div>
           <h2 id="modalTitle">–</h2>
-          <p id="modalBuilding" class="modal-building"></p>
+          <p id="modalBuilding" class="modal-building" hidden></p>
         </div>
       </div>
 
-      <p id="modalInfoText" class="modal-info-text"></p>
+      <p id="modalInfoText" class="modal-info-text" hidden></p>
 
       <div class="modal-gallery" id="modalGallery">
         <div class="gallery-frame">
@@ -125,7 +125,7 @@
             <dd id="modalHours">–</dd>
           </div>
           <div class="profile-item">
-            <dt>Belichtung</dt>
+            <dt>Beleuchtung</dt>
             <dd id="modalLighting">–</dd>
           </div>
           <div class="profile-item">
@@ -147,9 +147,9 @@
         </div>
 
         <div class="rating-input">
+          <button type="button" id="ratingSubmitBtn" class="btn btn-primary">Absenden</button>
           <span class="rating-input-label">Deine Bewertung:</span>
           <div id="userStars" class="stars stars-interactive" role="radiogroup" aria-label="Bewertung abgeben"></div>
-        </div>
       </div>
 
       <a id="modalMapsLink" class="btn btn-outline btn-block" target="_blank" rel="noopener">

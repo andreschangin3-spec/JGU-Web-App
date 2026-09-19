@@ -25,130 +25,139 @@
    --------------------------------------------------------- */
 const LOCATIONS = [
   {
-    id: 1, name: "Beachvolleyballplätze (2x)", building: "Freianlage",
-    x: 68.5, y: 31,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99365,8.23418",
-    images: ["", "", ""],
-    infoText: "Zwei Beachvolleyballfelder mitten auf dem Campus – immer offen und komplett kostenlos nutzbar. Ball selbst mitbringen und einfach loslegen.",
+    id: 1, name: "Tischtennisplatten Jakob-Welder-Weg", building: "Tischtennis",
+    x: 60, y: 37,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99336096909562,8.238930548070405",
+    images: ["Bilder/TischtennisJakob-Welder-Weg.webp", "", ""],
+    infoText: "",
     profile: {
       hours: "Durchgehend geöffnet, kostenlos",
-      lighting: "Mittel",
+      lighting: "Ja",
+      surface: "Asphalt",
+      equipment: "Platte mit Metallnetz"
+    },
+    avgRating: 0, voteCount: 0,
+    comments: []
+  },
+  {
+    id: 2, name: "Tischtennisplatten Mensa", building: "Tischtennis",
+    x: 39, y: 38,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99203547101614,8.2348631722973",
+    images: ["Bilder/TischtennisMensa.webp", "", ""],
+    infoText: "",
+    profile: {
+      hours: "Durchgehend geöffnet, kostenlos",
+      lighting: "Ja",
+      surface: "Kies",
+      equipment: "Platte mit Metallnetz"
+    },
+    avgRating: 0, voteCount: 0,
+    comments: []
+  },
+  {
+    id: 3, name: "Beachvolleyballplätze", building: "Beachvolleyball",
+    x: 68, y: 31,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99318649622809,8.241086501211935",
+    images: ["Bilder/Beachvolleyball.webp", "", ""],
+    infoText: "",
+    profile: {
+      hours: "Durchgehend geöffnet, kostenlos",
+      lighting: "Nein",
       surface: "Sand",
-      equipment: "Netz vorhanden"
+      equipment: "Netz & Pfosten"
     },
-    avgRating: 4.6, voteCount: 38,
-    comments: [
-      { author: "Mara", text: "Immer wer da zum Mitspielen, Sand ist top gepflegt." },
-      { author: "Timo", text: "Perfekt für eine Runde nach der Vorlesung." }
-    ]
+    avgRating: 0, voteCount: 0,
+    comments: []
   },
   {
-    id: 2, name: "Große Wiese zum Treffen", building: "Freianlage",
-    x: 70, y: 37.9,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99323,8.23421",
-    images: ["", "", ""],
-    infoText: "Große, offene Rasenfläche zwischen den Instituten – ideal zum Treffen, für Spikeball, Frisbee oder einfach zum Entspannen zwischen den Vorlesungen.",
-    profile: {
-      hours: "Ganztägig frei zugänglich",
-      lighting: "Schlecht",
-      surface: "Rasen",
-      equipment: "Kein Netz/Geräte – eigenes Equipment mitbringen"
-    },
-    avgRating: 4.7, voteCount: 52,
-    comments: [
-      { author: "Mara", text: "Wir treffen uns hier fast täglich zum Spikeball." },
-      { author: "Timo", text: "Genug Platz, auch wenn mehrere Gruppen da sind." }
-    ]
-  },
-  {
-    id: 3, name: "Calisthenics Park", building: "Freianlage",
-    x: 78, y: 58.5,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99199,8.23436",
-    images: ["", "", ""],
-    infoText: "Outdoor Anlage mit Stangen, Barren und weiteren Geräten fürs Bodyweight-Training – frei zugänglich für alle.",
+    id: 4, name: "Große Wiese am Natfak", building: "",
+    x: 69.5, y: 40,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.992653530235785,8.241559831174214",
+    images: ["Bilder/WieseNatFak.webp", "", ""],
+    infoText: "",
     profile: {
       hours: "Durchgehend geöffnet, kostenlos",
-      lighting: "Mittel",
-      surface: "stoßdämpfenden Fallschutzboden",
-      equipment: "Klimmzugstangen, Barren, Elevated Pushup Standen"
+      lighting: "Nein",
+      surface: "Gras",
+      equipment: "-"
     },
-    avgRating: 4.5, voteCount: 29,
-    comments: [
-      { author: "Mara", text: "Gute Auswahl an Geräten, abends oft leer." },
-      { author: "Timo", text: "Toller Spot für Ganzkörpertraining an der frischen Luft." }
-    ]
+    avgRating: 0, voteCount: 0,
+    comments: []
   },
   {
-    id: 4, name: "Tischtennisplatte Joachimweg 1", building: "Johann-Joachim-Becher-Weg",
-    x: 57.5, y: 37.0,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.992001404609574,8.234863473790478",
-    images: ["", "", ""],
-    infoText: "Fest installierte Tischtennisplatte im Freien am Johann-Joachim-Becher-Weg, frei nutzbar – Schläger und Bälle selbst mitbringen.",
+    id: 5, name: "Calisthenics Park", building: "Calisthenics",
+    x: 77, y: 63,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.990990104886514,8.24343638799395",
+    images: ["Bilder/CalisthenicsPark.webp", "", ""],
+    infoText: "",
     profile: {
       hours: "Durchgehend geöffnet, kostenlos",
-      lighting: "?",
-      surface: "Wetterfeste Betonplatte",
-      equipment: "Metall Netz vorhanden"
+      lighting: "Nein",
+      surface: "Gummiboden",
+      equipment: "Calisthenics-Station"
     },
-    avgRating: 4.2, voteCount: 15,
-    comments: [
-      { author: "Mara", text: "Meistens frei, gute Alternative zur Platte an der Mensa." },
-      { author: "Timo", text: "Text Text Text" }
-    ]
+    avgRating: 0, voteCount: 0,
+    comments: []
   },
   {
-    id: 5, name: "Tischtennisplatte Joachimweg 2", building: "Johann-Joachim-Becher-Weg",
-    x: 56.0, y: 37.4,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.992001404609574,8.234863473790478",
-    images: ["", "", ""],
-    infoText: "Zweite Tischtennisplatte direkt neben der ersten am Johann-Joachim-Becher-Weg – gut für spontane Doppelrunden zu viert.",
+    id: 6, name: "Stadion", building: "Laufen / Laufbahn",
+    x: 77, y: 71,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.9901307235412,8.243008295002966",
+    images: ["Bilder/Stadion.webp", "", ""],
+    infoText: "",
     profile: {
       hours: "Durchgehend geöffnet, kostenlos",
-      lighting: "?",
-      surface: "Wetterfeste Betonplatte",
-      equipment: "Metall Netz vorhanden"
+      lighting: "Ja",
+      surface: "Tartan (Kunststoff)",
+      equipment: "Laufbahnen"
     },
-    avgRating: 4.1, voteCount: 11,
-    comments: [
-      { author: "Mara", text: "Praktisch, dass hier gleich zwei Platten nebeneinander stehen" },
-      { author: "Timo", text: "In den Mittagspausen oft belegt :(" }
-    ]
+    avgRating: 0, voteCount: 0,
+    comments: []
   },
   {
-    id: 6, name: "Tischtennisplatte Mensa 1", building: "An der Mensa",
-    x: 41.9, y: 36.5,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99331,8.23371",
-    images: ["", "", ""],
-    infoText: "Fest installierte Tischtennisplatte nahe der Mensa – ideal für eine schnelle Runde in der Mittagspause.",
+    id: 7, name: "Wiese Sport Fachschaft", building: "",
+    x: 84, y: 52,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99189068543014,8.244754996156434",
+    images: ["Bilder/WieseSportFachschaft .webp", "", ""],
+    infoText: "",
     profile: {
       hours: "Durchgehend geöffnet, kostenlos",
-      lighting: "Schlecht",
-      surface: "Wetterfeste Betonplatte",
-      equipment: "Metall Netz vorhanden"
+      lighting: "Nein",
+      surface: "Gras",
+      equipment: "-"
     },
-    avgRating: 4.0, voteCount: 22,
-    comments: [
-      { author: "Mara", text: "Liegt praktisch auf dem Weg zur Mensa." },
-      { author: "Timo", text: "Etwas schattig durch die Bäume, aber okay." }
-    ]
+    avgRating: 0, voteCount: 0,
+    comments: []
   },
   {
-    id: 7, name: "Tischtennisplatte Mensa 2", building: "An der Mensa",
-    x: 40.8, y: 37.7,
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.99324,8.23369",
-    images: ["", "", ""],
-    infoText: "Zweite Tischtennisplatte direkt neben der ersten an der Mensa – bei gutem Wetter oft schnell besetzt.",
+    id: 8, name: "Station Motorikpfad an der Spielhalle", building: "Motorik / Bewegung",
+    x: 81, y: 52,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.991807415373195,8.24442252051401",
+    images: ["Bilder/MotorikpfadSpielhalle.webp", "", ""],
+    infoText: "",
     profile: {
       hours: "Durchgehend geöffnet, kostenlos",
-      lighting: "Schlecht",
-      surface: "Wetterfeste Betonplatte",
-      equipment: "Metall Netz vorhanden"
+      lighting: "Nein",
+      surface: "Holzhackschnitzel",
+      equipment: "Kletter- & Balancierelemente"
     },
-    avgRating: 3.9, voteCount: 18,
-    comments: [
-      { author: "Mara", text: "Nach der Mensa kurz die Beine vertreten, top." },
-      { author: "Timo", text: "Zu Stoßzeiten muss man kurz warten." }
-    ]
+    avgRating: 0, voteCount: 0,
+    comments: []
+  },
+  {
+    id: 9, name: "Beachhandball", building: "Beachhandball",
+    x: 74, y: 67,
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=49.990578338869504,8.242880360466499",
+    images: ["Bilder/Beachhandball.webp", "", ""],
+    infoText: "",
+    profile: {
+      hours: "Durchgehend geöffnet, kostenlos",
+      lighting: "Ja",
+      surface: "Sand",
+      equipment: "-"
+    },
+    avgRating: 0, voteCount: 0,
+    comments: []
   }
 ];
 

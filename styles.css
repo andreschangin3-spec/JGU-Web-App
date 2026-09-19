@@ -448,6 +448,8 @@ button, input, textarea {
 
 .location-item:hover {
   background: var(--bg-hell);
+  box-shadow: var(--schatten);
+  transform: translateY(-1px);
 }
 
 .location-item.active {
