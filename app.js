@@ -296,7 +296,8 @@ function renderLocationList() {
   const filtered = LOCATIONS.filter(loc =>
     !query ||
     loc.name.toLowerCase().includes(query) ||
-    loc.building.toLowerCase().includes(query)
+    loc.building.toLowerCase().includes(query) ||
+    loc.infoText.toLowerCase().includes(query)
   );
 
   locationList.innerHTML = "";
