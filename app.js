@@ -179,6 +179,7 @@ const LS_COMMENTS_KEY = "jguCampus_userComments"; // { [id]: [ {author, text}, .
 const pinLayer      = document.getElementById("pinLayer");
 const mapStage       = document.getElementById("mapStage");
 const mapViewport    = document.getElementById("mapViewport");
+const mapImage       = document.getElementById("mapImage"); 
 const infoBox        = document.getElementById("infoBox");
 const infoBoxNumber  = document.getElementById("infoBoxNumber");
 const infoBoxBuilding= document.getElementById("infoBoxBuilding");
@@ -258,23 +259,77 @@ function buildStaticStars(container, rating) {
   }
 }
 
+
+/* ---------------------------------------------------------
+   4b) KARTEN-GEOMETRIE
+   Berechnet, wo das Bild wirklich innerhalb von #mapImage liegt
+   (object-fit: contain/cover können Ränder erzeugen oder Teile
+   abschneiden). Pins & Zoom nutzen das Ergebnis, damit sie immer
+   exakt auf der sichtbaren Karte sitzen.
+   --------------------------------------------------------- */
+const MOBILE_CROP_BREAKPOINT = 720; // muss zum CSS-Breakpoint passen
+
+function computeMapGeometry() {
+  const cw = mapViewport.clientWidth;
+  const ch = mapViewport.clientHeight;
+  const iw = mapImage.naturalWidth;
+  const ih = mapImage.naturalHeight;
+  if (!cw || !ch || !iw || !ih) return null;
+
+  const isMobileCrop = window.matchMedia(`(max-width: ${MOBILE_CROP_BREAKPOINT}px)`).matches;
+  // Desktop/Tablet: ganzes Bild sichtbar (contain). Smartphone: rechts
+  // abgeschnitten sichtbar (cover, siehe CSS object-position: right).
+  const scale = isMobileCrop ? Math.max(cw / iw, ch / ih) : Math.min(cw / iw, ch / ih);
+  const dw = iw * scale;
+  const dh = ih * scale;
+  const offsetX = isMobileCrop ? (cw - dw) : (cw - dw) / 2;
+  const offsetY = (ch - dh) / 2;
+
+  return { cw, ch, dw, dh, offsetX, offsetY };
+}
+
+/* Positioniert das <img>-Element selbst exakt anhand der berechneten
+   Geometrie (Pixelwerte statt CSS object-fit). Dadurch entsteht die
+   sichtbare Bildposition aus DENSELBEN Zahlen wie die Pin-Positionen –
+   Bild und Pins können nicht mehr auseinanderlaufen, egal bei welcher
+   Fenstergröße oder welchem Breakpoint. */
+function applyMapImageLayout(geo) {
+  if (!geo) return;
+  mapImage.style.position = "absolute";
+  mapImage.style.left = geo.offsetX + "px";
+  mapImage.style.top = geo.offsetY + "px";
+  mapImage.style.width = geo.dw + "px";
+  mapImage.style.height = geo.dh + "px";
+}
+
 /* ---------------------------------------------------------
    5) PINS AUF DER KARTE RENDERN
    --------------------------------------------------------- */
 function renderPins() {
   pinLayer.innerHTML = "";
+  const geo = computeMapGeometry(); // NEU: nur einmal berechnen
+  applyMapImageLayout(geo); // NEU: Bild exakt nach denselben Zahlen positionieren wie die Pins
   LOCATIONS.forEach(loc => {
+    const pos = toDisplayPercent(loc, geo); // geo wird übergeben statt neu berechnet
     const pin = document.createElement("button");
     pin.className = "pin";
     pin.type = "button";
-    pin.style.left = loc.x + "%";
-    pin.style.top = loc.y + "%";
+    pin.style.left = pos.x + "%";
+    pin.style.top = pos.y + "%";
     pin.textContent = loc.id;
     pin.setAttribute("aria-label", `${loc.id}: ${loc.name}`);
     pin.dataset.id = loc.id;
     pin.addEventListener("click", () => toggleLocation(loc.id));
     pinLayer.appendChild(pin);
   });
+}
+
+function toDisplayPercent(loc, geo) {
+  geo = geo || computeMapGeometry(); // Fallback, falls einzeln aufgerufen (z. B. in zoomToLocation)
+  if (!geo) return { x: loc.x, y: loc.y };
+  const px = geo.offsetX + (loc.x / 100) * geo.dw;
+  const py = geo.offsetY + (loc.y / 100) * geo.dh;
+  return { x: (px / geo.cw) * 100, y: (py / geo.ch) * 100 };
 }
 
 /* ---------------------------------------------------------
@@ -344,7 +399,8 @@ function zoomToLocation(loc) {
   // auf die Position des Pins (in Prozent der Bildgröße) und skalieren dann.
   // So "wächst" die Karte optisch von genau diesem Punkt aus nach außen,
   // wodurch der gewählte Ort automatisch im Zentrum des sichtbaren Bereichs landet.
-  mapStage.style.transformOrigin = `${loc.x}% ${loc.y}%`;
+  const pos = toDisplayPercent(loc); 
+  mapStage.style.transformOrigin = `${pos.x}% ${pos.y}%`; 
   mapStage.style.transform = `scale(${ZOOM_FACTOR})`;
 }
 
@@ -621,11 +677,6 @@ commentForm.addEventListener("submit", e => {
 /* ---------------------------------------------------------
    11) INITIALISIERUNG
    --------------------------------------------------------- */
-function init() {
-  renderPins();
-  renderLocationList();
-}
-
 /* ---------------------------------------------------------
    12) MOBILE NAVIGATION (Hamburger-Menü)
    --------------------------------------------------------- */
@@ -651,6 +702,30 @@ if (navToggle && mainNav) {
   });
 }
 
+
+
+function init() {
+  renderPins();
+  renderLocationList();
+
+  const refreshMapLayout = () => {
+    renderPins();
+    if (activeLocationId) {
+      const loc = getLocationById(activeLocationId);
+      if (loc) zoomToLocation(loc);
+    }
+  };
+
+  if (mapImage.complete) refreshMapLayout();
+  mapImage.addEventListener("load", refreshMapLayout);
+
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(refreshMapLayout, 150);
+  });
+  window.addEventListener("orientationchange", refreshMapLayout);
+}
 
 
 
